@@ -1,0 +1,13 @@
+.card {
+  background-image: radial-gradient(
+    ellipse at 50% 300%,
+    var(--primary-20) 10%,
+    var(--primary-10) 100%
+  );
+  border-radius: 32px;
+  padding: 24px;
+}
+
+.card:empty {
+  display: none;
+}
