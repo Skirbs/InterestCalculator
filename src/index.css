@@ -4,7 +4,11 @@
   --inner-background: hsl(147, 35%, 12%);
 
   --primary-7: hsl(155, 35%, 7%);
+  --primary-10: hsl(155, 35%, 10%);
   --primary-15: hsl(155, 35%, 15%);
+  --primary-18: hsl(155, 35%, 18%);
+  --primary-20: hsl(155, 35%, 20%);
+  --primary-25: hsl(155, 35%, 25%);
 
   --font: rgb(248, 255, 251);
 }
@@ -22,6 +26,7 @@
 
 * {
   font-family: "Gabarito", sans-serif;
+  font-size: 1rem;
   color: var(--font);
 }
 
@@ -32,11 +37,23 @@
 }
 
 h1,
-p {
+p,
+label,
+select,
+option,
+button {
   margin: 0;
 }
 
 .shadow-outline {
   --shadow-color: var(--primary-7);
   box-shadow: 0 0 12px var(--shadow-color);
+}
+
+li {
+  list-style: none;
+}
+
+button {
+  border: none;
 }

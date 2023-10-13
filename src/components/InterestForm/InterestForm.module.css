@@ -1,0 +1,78 @@
+.form {
+  background-image: radial-gradient(
+    ellipse at 50% 300%,
+    var(--primary-20) 10%,
+    var(--primary-10) 100%
+  );
+  border-radius: 32px;
+  padding: 24px;
+
+  width: 520px;
+}
+
+.form label {
+  font-size: 1.2rem;
+  word-wrap: break-word;
+  text-align: center;
+  margin-bottom: 4px;
+}
+
+.form select {
+  --shadow-color: var(--primary-10);
+
+  background-color: var(--primary-18);
+  text-align: center;
+  font-size: 1.05rem;
+  outline: none;
+  border-radius: 8px;
+  border: none;
+}
+
+.values-ul {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+
+  padding: 0;
+  gap: 16px;
+}
+
+.value {
+  flex: 1;
+}
+
+.value input {
+  --shadow-color: var(--primary-10);
+
+  background-color: var(--primary-18);
+
+  text-align: center;
+
+  min-width: 200px;
+
+  padding: 4px 12px;
+  font-size: 1rem;
+
+  border-radius: 10px;
+  border: none;
+
+  outline: none;
+  caret-color: var(--primary-25);
+}
+
+.form button {
+  --shadow-color: var(--primary-10);
+  background-color: var(--primary-18);
+  padding: 2px 24px;
+  border-radius: 10px;
+  font-size: 1.1rem;
+}
+
+.form button:hover {
+  opacity: 0.9;
+}
+.form button:active {
+  opacity: 0.8;
+}
