@@ -14,7 +14,14 @@ const InterestForm = () => {
       <ul className={style["values-ul"]}>
         <li className={`${style["value"]} flex-column`}>
           <label htmlFor="current-amount">Current Amount</label>
-          <input type="number" min="0" id="current-amount" className="shadow-outline" />
+          <input
+            type="number"
+            min="0"
+            id="current-amount"
+            placeholder="Current ($)"
+            className="shadow-outline"
+            required
+          />
         </li>
         <li className={`${style["value"]} flex-column`}>
           <label htmlFor="max-year">Year</label>
@@ -24,17 +31,33 @@ const InterestForm = () => {
             min="0"
             max="125"
             id="max-year"
+            placeholder="Amount of years to list"
             className="shadow-outline"
+            required
           />
         </li>
         <li className={`${style["value"]} flex-column`}>
           <label htmlFor="rate">rate / discount (%)</label>
           {/* create condition where if discount its says "discount" */}
-          <input type="number" min="0" id="rate" className="shadow-outline" />
+          <input
+            type="number"
+            min="0"
+            id="rate"
+            placeholder="The amount of rate"
+            className="shadow-outline"
+            required
+          />
         </li>
         <li className={`${style["value"]} flex-column `}>
           <label htmlFor="compound-per-year">Compounds per year ($)</label>
-          <input type="number" min="0" id="compound-per-year" className="shadow-outline" />
+          <input
+            type="number"
+            min="0"
+            id="compound-per-year"
+            placeholder="N amount of compounds"
+            className="shadow-outline"
+            required
+          />
         </li>
       </ul>
 
