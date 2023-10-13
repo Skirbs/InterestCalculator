@@ -1,0 +1,42 @@
+@import url("https://fonts.googleapis.com/css2?family=Gabarito:wght@400;500;600&display=swap");
+:root {
+  --outer-background: hsl(152, 35%, 8%);
+  --inner-background: hsl(147, 35%, 12%);
+
+  --primary-7: hsl(155, 35%, 7%);
+  --primary-15: hsl(155, 35%, 15%);
+
+  --font: rgb(248, 255, 251);
+}
+
+#background {
+  z-index: -100;
+  position: fixed;
+  inset: 0;
+  background-image: radial-gradient(
+    circle at 50%,
+    var(--inner-background) 10%,
+    var(--outer-background) 80%
+  );
+}
+
+* {
+  font-family: "Gabarito", sans-serif;
+  color: var(--font);
+}
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+h1,
+p {
+  margin: 0;
+}
+
+.shadow-outline {
+  --shadow-color: var(--primary-7);
+  box-shadow: 0 0 12px var(--shadow-color);
+}
