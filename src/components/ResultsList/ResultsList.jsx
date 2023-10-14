@@ -8,7 +8,10 @@ const ResultsList = () => {
     <Card className={`flex-column shadow-outline`}>
       <table className={style.table}>
         <ResultsListHeader />
-        <ResultsListData />
+
+        <tbody>
+          <ResultsListData />
+        </tbody>
       </table>
     </Card>
   );
