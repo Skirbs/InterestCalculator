@@ -3,16 +3,25 @@ import Card from "../Card/Card";
 import ResultsListHeader from "./ResultsListHeader";
 import ResultsListData from "./ResultsListData";
 
-const ResultsList = () => {
-  return (
-    <Card className={`flex-column shadow-outline`}>
+const ResultsList = (props) => {
+  const createTable = () => {
+    return (
       <table className={style.table}>
-        <ResultsListHeader />
-
+        <ResultsListHeader interestData={props.interestData} />
         <tbody>
-          <ResultsListData />
+          {props.interestData.data.map((rowData, index) => {
+            return (
+              <ResultsListData interestData={props.interestData} dataIndex={index} key={index} />
+            );
+          })}
         </tbody>
       </table>
+    );
+  };
+
+  return (
+    <Card className={`flex-column shadow-outline`}>
+      {props.interestData.data.length === 0 ? null : createTable()}
     </Card>
   );
 };

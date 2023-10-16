@@ -1,10 +1,9 @@
-const ResultsListHeader = () => {
+const ResultsListHeader = (props) => {
   return (
     <thead>
       <tr>
         <th>Year</th>
-        <th>Interest / Discount</th> {/* Change depending of interest type */}
-        <th>Total Savings</th>
+        <th>{props.interestData.type === 1 ? "Reduced Discount" : "Added Interest"}</th>
         <th>Total Savings</th>
       </tr>
     </thead>

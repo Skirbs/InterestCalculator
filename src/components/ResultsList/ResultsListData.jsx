@@ -1,10 +1,9 @@
-const ResultsListData = () => {
+const ResultsListData = (props) => {
   return (
     <tr>
-      <td>1</td>
-      <td>2</td>
-      <td>3</td>
-      <td>4</td>
+      <td>{props.interestData.data[props.dataIndex].year}</td>
+      <td>{props.interestData.data[props.dataIndex].interestAdded}</td>
+      <td>{props.interestData.data[props.dataIndex].futureValue}</td>
     </tr>
   );
 };

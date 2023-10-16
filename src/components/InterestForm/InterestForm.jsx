@@ -2,7 +2,7 @@ import style from "./InterestForm.module.css";
 import Card from "../Card/Card";
 import {useState} from "react";
 
-const InterestForm = () => {
+const InterestForm = (props) => {
   const [interestMode, setInterestMode] = useState(0);
 
   const changeType = (e) => {
@@ -18,15 +18,29 @@ const InterestForm = () => {
     const rateValue = parseFloat(document.querySelector("#rate").value);
     const compoundPerYearValue = parseFloat(document.querySelector("#compound-per-year").value);
 
+    let dataList = [];
+    let lastCurrentAmountValue = currentAmountValue;
     switch (interestMode) {
       case 0 /* Simple Interest */:
         for (let i = 1; i <= maxYearValue; i++) {
-          const futureValue = currentAmountValue * (1 + (rateValue / 100) * i);
+          const futureValue =
+            Math.round(currentAmountValue * (1 + (rateValue / 100) * i) * 100) / 100;
+          const interestAdded = Math.round((futureValue - lastCurrentAmountValue) * 100) / 100;
+          lastCurrentAmountValue = futureValue;
+
+          const newData = new InterestDataClass(i, interestAdded, futureValue);
+          dataList.push(newData);
         }
         break;
       case 1 /* Simple Discount */:
         for (let i = 1; i <= maxYearValue; i++) {
-          const futureValue = currentAmountValue * (1 - (rateValue / 100) * i);
+          const futureValue =
+            Math.round(currentAmountValue * (1 - (rateValue / 100) * i) * 100) / 100;
+
+          const interestAdded = Math.round((lastCurrentAmountValue - futureValue) * 100) / 100;
+          lastCurrentAmountValue = futureValue;
+          const newData = new InterestDataClass(i, interestAdded, futureValue);
+          dataList.push(newData);
         }
         break;
       case 2 /* Compound Interest */:
@@ -34,7 +48,16 @@ const InterestForm = () => {
           for (let j = 1; j <= compoundPerYearValue; j++) {
             const futureValue =
               Math.round(currentAmountValue * Math.pow(1 + rateValue / 100 / j, j * i) * 100) / 100;
-            console.log(`Year ${i} (${j}/${compoundPerYearValue}): ${futureValue}`);
+            const interestAdded = Math.round((futureValue - lastCurrentAmountValue) * 100) / 100;
+            lastCurrentAmountValue = futureValue;
+            const newData = new InterestDataClass(
+              i,
+              interestAdded,
+              futureValue,
+              j,
+              compoundPerYearValue
+            );
+            dataList.push(newData);
           }
         }
         break;
@@ -46,6 +69,7 @@ const InterestForm = () => {
         }
         break;
     }
+    props.onSubmitHandler({type: interestMode, data: dataList});
   };
 
   return (
@@ -74,7 +98,7 @@ const InterestForm = () => {
               type="number"
               min="0"
               id="current-amount"
-              placeholder="Current ($)"
+              placeholder="Current Value"
               className="shadow-outline"
               required
             />
@@ -107,12 +131,13 @@ const InterestForm = () => {
           <li
             className={`${style["value"]} flex-column`}
             style={{display: interestMode < 2 ? "none" : "flex"}}>
-            <label htmlFor="compound-per-year">Compounds per year ($)</label>
+            <label htmlFor="compound-per-year">Compounds per year </label>
             <input
               type="number"
               min="0"
               id="compound-per-year"
               placeholder="N amount of compounds"
+              defaultValue={1}
               className="shadow-outline"
             />
           </li>
@@ -124,5 +149,17 @@ const InterestForm = () => {
     </Card>
   );
 };
+
+function InterestDataClass(year, interestAdded, futureValue, currentCompound, maxCompound) {
+  this.year = year;
+
+  if (currentCompound > 0) {
+    this.currentCompound = currentCompound;
+    this.maxCompound = maxCompound;
+  }
+
+  this.interestAdded = interestAdded;
+  this.futureValue = futureValue;
+}
 
 export default InterestForm;
