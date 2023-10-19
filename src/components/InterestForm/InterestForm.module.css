@@ -20,6 +20,17 @@
   border: none;
 }
 
+.top-selections {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+}
+
+.top-selections div {
+  display: flex;
+  flex-direction: column;
+}
 .values-ul {
   width: 100%;
   display: flex;

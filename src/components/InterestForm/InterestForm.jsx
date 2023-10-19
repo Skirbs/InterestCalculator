@@ -2,74 +2,116 @@ import style from "./InterestForm.module.css";
 import Card from "../Card/Card";
 import {useState} from "react";
 
+let dataList = [];
+
 const InterestForm = (props) => {
   const [interestMode, setInterestMode] = useState(0);
+  const [answerType, setAnswerType] = useState(0);
 
-  const changeType = (e) => {
+  const changeInterestType = (e) => {
     setInterestMode(parseFloat(e.target.value));
+    /* set "required" to compound per year*/
+  };
+
+  const changeAnswerType = (e) => {
+    setAnswerType(parseFloat(e.target.value));
     /* set "required" to compound per year*/
   };
 
   const onSubmitHandler = (e) => {
     e.preventDefault();
+    dataList = [];
 
     const currentAmountValue = parseFloat(document.querySelector("#current-amount").value);
     const maxYearValue = parseFloat(document.querySelector("#max-year").value);
     const rateValue = parseFloat(document.querySelector("#rate").value);
     const compoundPerYearValue = parseFloat(document.querySelector("#compound-per-year").value);
 
-    let dataList = [];
-    let lastCurrentAmountValue = currentAmountValue;
-    switch (interestMode) {
-      case 0 /* Simple Interest */:
-        for (let i = 1; i <= maxYearValue; i++) {
-          const futureValue =
-            Math.round(currentAmountValue * (1 + (rateValue / 100) * i) * 100) / 100;
-          const interestAdded = Math.round((futureValue - lastCurrentAmountValue) * 100) / 100;
-          lastCurrentAmountValue = futureValue;
+    let lastFutureValue = currentAmountValue;
 
-          const newData = new InterestDataClass(i, interestAdded, futureValue);
-          dataList.push(newData);
-        }
-        break;
-      case 1 /* Simple Discount */:
-        for (let i = 1; i <= maxYearValue; i++) {
-          const futureValue =
-            Math.round(currentAmountValue * (1 - (rateValue / 100) * i) * 100) / 100;
+    if (answerType == 0) {
+      for (let i = 1; i <= maxYearValue; i++) {
+        [lastFutureValue] = createData(
+          interestMode,
+          currentAmountValue,
+          lastFutureValue,
+          rateValue,
+          i,
+          compoundPerYearValue
+        );
+      }
+    } else {
+      [lastFutureValue] = createData(
+        interestMode,
+        currentAmountValue,
+        lastFutureValue,
+        rateValue,
+        maxYearValue,
+        compoundPerYearValue
+      );
+    }
 
-          const interestAdded = Math.round((lastCurrentAmountValue - futureValue) * 100) / 100;
-          lastCurrentAmountValue = futureValue;
-          const newData = new InterestDataClass(i, interestAdded, futureValue);
-          dataList.push(newData);
-        }
+    props.onSubmitHandler({type: interestMode, data: dataList});
+  };
+
+  const createData = (
+    type,
+    currentAmountValue,
+    lastFutureValue,
+    rateValue,
+    year,
+    compoundPerYearValue
+  ) => {
+    let futureValue;
+    switch (type) {
+      case 0:
+        futureValue = Math.round(currentAmountValue * (1 + (rateValue / 100) * year) * 100) / 100;
         break;
-      case 2 /* Compound Interest */:
-        for (let i = 1; i <= maxYearValue; i++) {
-          for (let j = 1; j <= compoundPerYearValue; j++) {
-            const futureValue =
-              Math.round(currentAmountValue * Math.pow(1 + rateValue / 100 / j, j * i) * 100) / 100;
-            const interestAdded = Math.round((futureValue - lastCurrentAmountValue) * 100) / 100;
-            lastCurrentAmountValue = futureValue;
-            const newData = new InterestDataClass(
-              i,
-              interestAdded,
-              futureValue,
-              j,
-              compoundPerYearValue
-            );
-            dataList.push(newData);
-          }
-        }
+
+      case 1:
+        futureValue = Math.round(currentAmountValue * (1 - (rateValue / 100) * year) * 100) / 100;
         break;
-      case 3 /* Annuity */:
-        for (let i = 1; i <= maxYearValue; i++) {
-          for (let j = 1; j <= compoundPerYearValue; j++) {
-            /* Annuity formula */
-          }
-        }
+
+      case 2:
+        futureValue =
+          Math.round(
+            currentAmountValue *
+              Math.pow(1 + rateValue / 100 / compoundPerYearValue, compoundPerYearValue * year) *
+              100
+          ) / 100;
+        break;
+
+      case 3:
+        futureValue =
+          Math.round(
+            currentAmountValue *
+              ((Math.pow(1 + rateValue / 100 / compoundPerYearValue, compoundPerYearValue * year) -
+                1) /
+                (rateValue / 100 / compoundPerYearValue)) *
+              100
+          ) / 100;
+        break;
+
+      case 4:
+        futureValue =
+          Math.round(
+            currentAmountValue *
+              ((Math.pow(1 + rateValue / 100 / compoundPerYearValue, compoundPerYearValue * year) -
+                1) /
+                (rateValue / 100 / compoundPerYearValue)) *
+              (1 + rateValue / 100) *
+              100
+          ) / 100;
         break;
     }
-    props.onSubmitHandler({type: interestMode, data: dataList});
+
+    const interestAdded = Math.round((futureValue - lastFutureValue) * 100) / 100;
+    lastFutureValue = futureValue;
+
+    const newData = new InterestDataClass(year, interestAdded, futureValue);
+    dataList.push(newData);
+
+    return [lastFutureValue];
   };
 
   return (
@@ -79,18 +121,37 @@ const InterestForm = (props) => {
           onSubmitHandler(e);
         }}
         className={`${style.form} flex-column`}>
-        <label htmlFor="interest-type">Interest Type</label>
-        <select
-          id="interest-type"
-          className="shadow-outline"
-          onChange={(e) => {
-            changeType(e);
-          }}>
-          <option value="0">Simple Interest</option>
-          <option value="1">Simple Discount</option>
-          <option value="2">Compound Interest</option>
-          <option value="3">Annuity</option>
-        </select>
+        <div className={`${style["top-selections"]}`}>
+          <div>
+            <label htmlFor="interest-type">Interest Type</label>
+            <select
+              id="interest-type"
+              className="shadow-outline"
+              onChange={(e) => {
+                changeInterestType(e);
+              }}>
+              <option value="0">Simple Interest</option>
+              <option value="1">Simple Discount</option>
+              <option value="2">Compound Interest</option>
+              <option value="3">Ordinary Annuity</option>
+              <option value="4">Annuity Due</option>
+            </select>
+          </div>
+
+          <div>
+            <label htmlFor="answer-type">Answer Type</label>
+            <select
+              id="answer-type"
+              className="shadow-outline"
+              onChange={(e) => {
+                changeAnswerType(e);
+              }}>
+              <option value="0">Show All Years</option>
+              <option value="1">Show Given Year</option>
+            </select>
+          </div>
+        </div>
+
         <ul className={style["values-ul"]}>
           <li className={`${style["value"]} flex-column`}>
             <label htmlFor="current-amount">Current Amount</label>
@@ -125,6 +186,7 @@ const InterestForm = (props) => {
               id="rate"
               placeholder="The amount of rate"
               className="shadow-outline"
+              step={0.0001}
               required
             />
           </li>
